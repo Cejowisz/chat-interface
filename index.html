@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="modal" :class="[{'show-modal': showModal}, {'hide-modal': !showModal}]">
+                <form class="configure-form">
+                    <p class="configure">
+                        <span>Configure</span> <span class="cancel">X</span>
+                    </p>
+                    <p>IBM Watson API Endpoint:</p>
+                    <input type="text" v-model="endpoint">
+                    <div class="configure-buttons">
+                        <button>Cancel</button>
+                        <button @click.prevent="makeApiCall">Ok</button>
+                    </div>
+                </form>
+            </div>
+            <div class="chat-interface">
+
+                <button @click.prevent="showModal = !showModal">Configure</button>
+
+                <div class="screen-area"></div>
+
+                <form>
+                    <input type="text" v-model="message">
+                    <button @click.prevent="sendMessage">Send</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let app = new Vue({
+
+            el: '#app',
+
+            data() {
+                return {
+                    endpoint: '',
+                    message: '',
+                    showModal: false
+                }
+            },
+
+            methods: {
+                makeApiCall() {
+                    alert(this.endpoint)
+                },
+
+                async sendMessage() {
+
+                    try {
+                        let res = await axios.post(this.endpoint)
+                        if (res) {
+                            // Do something here.
+                        }
+                    }
+                    catch (e) {
+                        console.log(e)
+                    }
+                }
+            }
+
+        })
+    </script>
+</body>
+</html>

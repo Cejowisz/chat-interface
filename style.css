@@ -1,0 +1,61 @@
+html, body{
+    height: 100%;
+}
+.container{
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    align-content: center;
+    min-height: 100vh;
+}
+.chat-interface{
+    grid-column: 2 / 3;
+    height: 400px;
+    background: #ccc;
+    padding: 30px;
+    display: grid;
+    grid-template: 30px 1fr 30px / 1fr;
+}
+.chat-interface button{
+    justify-self: end;
+}
+.screen-area{
+    background: #fefefe;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+form{
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 100px;
+}
+
+form button{
+    grid-column: 2 / 3;
+}
+.configure .cancel{
+    justify-self: end;
+}
+
+.show-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+}
+.modal{
+    width: inherit;
+    background: #fefefe;
+    padding: 50px;
+}
+.hide-modal {
+    display: none;
+}
+
+.configure-form{
+    display: grid;
+    grid-template: 40px 40px 40px 40px / 1fr;
+}
+.configure-buttons{
+    justify-self: end;
+}
