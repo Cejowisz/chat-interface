@@ -13,14 +13,16 @@
         <div class="container">
             <div class="modal" :class="[{'show-modal': showModal}, {'hide-modal': !showModal}]">
                 <form class="configure-form">
-                    <p class="configure">
-                        <span>Configure</span> <span class="cancel">X</span>
-                    </p>
+                    <h4 class="configure">
+                        <span>Configure</span> <span class="cancel">
+                            <img src="img/cancel.jpg" width="30" alt="">
+                        </span>
+                    </h4>
                     <p>IBM Watson API Endpoint:</p>
-                    <input type="text" v-model="endpoint">
+                    <input type="text" placeholder="https://example.com/v1/me" v-model="endpoint">
                     <div class="configure-buttons">
-                        <button>Cancel</button>
-                        <button @click.prevent="makeApiCall">Ok</button>
+                        <button class="button1" @click.prevent="cancelConfig">Cancel</button>
+                        <button class="button2" @click.prevent="makeApiCall">Ok</button>
                     </div>
                 </form>
             </div>
@@ -31,7 +33,7 @@
                 <div class="screen-area"></div>
 
                 <form>
-                    <input type="text" v-model="message">
+                    <input type="text" placeholder="Hi John Doe" v-model="message">
                     <button @click.prevent="sendMessage">Send</button>
                 </form>
 
@@ -54,7 +56,10 @@
 
             methods: {
                 makeApiCall() {
-                    alert(this.endpoint)
+                    if(this.endpoint) {
+                        return alert(this.endpoint)
+                    }
+                    return alert('end point is empty')
                 },
 
                 async sendMessage() {
@@ -68,6 +73,11 @@
                     catch (e) {
                         console.log(e)
                     }
+                },
+
+                cancelConfig() {
+                    this.endpoint = ''
+                    this.showModal = false
                 }
             }
 
