@@ -15,7 +15,7 @@
                 <form class="configure-form">
                     <h4 class="configure">
                         <span>Configure</span> <span class="cancel">
-                            <img src="img/cancel.jpg" width="30" alt="">
+                            <img @click.prevent="cancelConfig" src="img/cancel.jpg" width="30" alt="">
                         </span>
                     </h4>
                     <p>IBM Watson API Endpoint:</p>
