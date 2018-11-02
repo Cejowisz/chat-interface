@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,79 +10,106 @@
 </head>
 
 <body>
-    <div id="app">
-        <div class="container">
-            <div class="modal" :class="[{'show-modal': showModal}, {'hide-modal': !showModal}]">
-                <form class="configure-form">
-                    <h4 class="configure">
-                        <span>Configure</span> <span class="cancel">
-                            <img @click.prevent="cancelConfig" src="img/cancel.jpg" width="30" alt="">
+<div id="app">
+    <div class="container">
+        <div class="modal" :class="[{'show-modal': showModal}, {'hide-modal': !showModal}]">
+            <form class="configure-form">
+                <h4 class="configure">
+                    <span>Configure</span> <span class="cancel" @click.prevent="cancelConfig">
+                            <img src="img/cancel.jpg" width="30" alt="">
                         </span>
-                    </h4>
-                    <p>IBM Watson API Endpoint:</p>
-                    <input type="text" placeholder="https://example.com/v1/me" v-model="endpoint">
-                    <div class="configure-buttons">
-                        <button class="button1" @click.prevent="cancelConfig">Cancel</button>
-                        <button class="button2" @click.prevent="makeApiCall">Ok</button>
-                    </div>
-                </form>
+                </h4>
+                <p>IBM Watson API Endpoint:</p>
+                <input type="text" placeholder="https://example.com/v1/me" v-model="endpoint">
+                <input type="text" placeholder="username" v-model="username">
+                <input type="text" placeholder="password" v-model="password">
+                <div class="configure-buttons">
+                    <button class="button1" @click.prevent="cancelConfig">Cancel</button>
+                    <button class="button2" @click.prevent="makeApiCall">Ok</button>
+                </div>
+            </form>
+        </div>
+        <div class="chat-interface">
+
+            <button @click.prevent="showModal = true">Configure</button>
+
+            <div class="screen-area">
+                <div
+                    v-for="(item, index) in conversation"
+                    class="screen-area-message"
+                    :key="item.index">
+                    <p :class="[{'mine': item.mine}, {'someone': !item.mine}]">{{ item.message }}</p>
+                </div>
             </div>
-            <div class="chat-interface">
 
-                <button @click.prevent="showModal = !showModal">Configure</button>
+            <form>
+                <input type="text" placeholder="Hi John Doe" v-model="message">
+                <button @click.prevent="sendMessage">Send</button>
+            </form>
 
-                <div class="screen-area"></div>
-
-                <form>
-                    <input type="text" placeholder="Hi John Doe" v-model="message">
-                    <button @click.prevent="sendMessage">Send</button>
-                </form>
-
-            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let app = new Vue({
+<script>
+    let app = new Vue({
 
-            el: '#app',
+        el: '#app',
 
-            data() {
-                return {
-                    endpoint: '',
-                    message: '',
-                    showModal: false
+        data() {
+            return {
+                endpoint: '',
+                username: '',
+                password: '',
+                message: '',
+                showModal: false,
+                conversation: [],
+                headers: {}
+            }
+        },
+
+        methods: {
+            makeApiCall() {
+                if(this.endpoint) {
+                    this.showModal = false
+                    return alert(this.endpoint);
+                }
+                return alert('end point is empty')
+            },
+
+            async sendMessage() {
+
+                try {
+
+                    const config = {
+                        headers: {'content-type': 'application/json'},
+                        auth: {username: this.username, password: this.password}
+                    }
+                    const data = {input: {text: this.message}}
+                    let res = await axios.post(this.endpoint, data, config)
+                    if (res) {
+                        // Do something here.
+                        this.conversation.push({message: this.message, mine: true});
+                        this.conversation.push({message: this.parseWatsonResponse(res.data), mine: false});
+                        this.message = ''
+                    }
+                }
+                catch (e) {
+                    console.log(e)
                 }
             },
 
-            methods: {
-                makeApiCall() {
-                    if(this.endpoint) {
-                        return alert(this.endpoint)
-                    }
-                    return alert('end point is empty')
-                },
+            cancelConfig() {
+                this.endpoint = ''
+                this.showModal = false
+            },
 
-                async sendMessage() {
-
-                    try {
-                        let res = await axios.post(this.endpoint)
-                        if (res) {
-                            // Do something here.
-                        }
-                    }
-                    catch (e) {
-                        console.log(e)
-                    }
-                },
-
-                cancelConfig() {
-                    this.endpoint = ''
-                    this.showModal = false
-                }
+            parseWatsonResponse(responseData) {
+                return responseData.output.text[0]
             }
+        }
 
-        })
-    </script>
+    })
+</script>
 </body>
 </html>
